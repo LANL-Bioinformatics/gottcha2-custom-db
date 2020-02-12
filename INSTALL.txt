@@ -1,0 +1,55 @@
+*** How to compile and install the GOTTCHA database tool (gottcha_db) **
+
+July 24, 2018
+J. D. Gans (jgans@lanl.gov)
+Bioscience Division
+Los Alamos National Laboratory
+
+DEPENDENCIES:
+
+The gottcha_db program is written in C++ and has requried compile-time dependencies on the
+following open source software packages:
+	0) A c++ compiler. gottcha_db has been tested with recent versions (5.4.xx) of the g++
+	   compiler. While not extensively tested, gottcha_db compiles with the clang compiler
+	   that ships with OS X (APPLY LLVM version 9.0.0; circa mid-2018). Unlike previous versions
+	   of the gottcha_db program, OpenMP is *not* used.
+	   
+	1) MPI (Message passing interface). MPI is standard API for parallel programming
+	   on cluster-based computers. MPI must be installed in order to compile and run
+	   the gottcha_db program. While there are several implementations of the MPI 
+	   standard, gottcha_db has only been tested with the OpenMPI version 
+	   (available from https://www.open-mpi.org/). In theory, other versions of MPI
+	   should work just fine...
+
+	2) zlib, a standard compression library. While this library (which allows creation
+	   and reading of gzip files) is available on most Linux and OS X systems, gottcha_db
+	   requires zlib version >= 1.2.8. If you attempt to use an earlier version of
+	   zlib, you will get a compile time error (in options.cpp).
+	   
+	   If your system does *not* have a new enough version of zlib, you can download and
+	   compile a local copy of zlib (available from http://zlib.net/). After you do this,
+	   you will need to edit the gottcha_db Makefile and add the path to the zlib 
+	   include files to the "INC" variable (i.e. "INC = -I. -I/path/to/zlib/include"). You will
+	   also need to add the zlib library to the Makefile "LIBS" variable (i.e. 
+	   "LIBS = -lm /path/to/zlib/lib/libz.a").
+
+BUILDING THE PROGRAM:
+
+The gottcha_db program uses a very plain and hopefully easy to edit Makefile. The name of the c++
+compiler is specifed in the "CC" variable. Please note that MPI wraps the c++ compiler in a 
+special script ("mpic++" for OpenMPI), that needs to used in the Makefile. 
+
+As noted above, if your system does not provide a version of zlib >= 1.2.8, you will need to
+provide your own copy of zlib, and edit the Makefile to point to this new version.
+
+To build the gottcha_db program, type "make" in the gottcha_db home directory. This will (hopefully)
+create the gottcha_db program. If the build fails, please let me know (jgans@lanl.gov).
+
+Note that the gottcha_db program is a stand-alone executable, you can copy it where ever you like
+(on the same system). Moving the executable file to a *different* system may cause problems if
+the different system does not have the same versions of MPI and other required libraries.
+
+RUNNING THE PROGRAM:
+	
+Please see the README.txt file for information on how to run and operate the gottcha_db program.
+

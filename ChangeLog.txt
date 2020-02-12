@@ -1,0 +1,114 @@
+Version 2.0 (October 19, 2015)
+	* Rewrite of the GOTTCHA_DB perl script in C++ with MPI for parallel
+	  processing on both shared memory and cluster-based computers.
+	
+Version 2.1 (October 27, 2015)
+	* Slight speed up for the sequence fragmentation step. Modified the code to
+	  store a sorted list of query {word, word location} pairs. Searching is 
+	  faster when you search with sorted queries due to better cache access.
+	* Added a new command line option, "--squash <taxa label>", that prevents the
+	  sequence fragmentation (and subsequent writing) of the specified taxa labels. 
+	  This is useful for including background taxa (like human) in the unique k-mer
+	  search, without having to write their fragmented fasta files.
+	* TODO: Explore potential speed ups from changing deque->vector with 
+	  intelligent estimates of vector size used to preallocate space.
+
+Version 2.2 (November 19, 2015)
+	* Added GenBank flat files as a supported file type (gb/gbk/gbff; both compressed
+	  and uncompressed are supported).
+	* Makefile has been modified to include the stand-alone "gottcha_format" tool, which
+	  is now responsible for producing the tab delimited input file of label to sequence
+	  file mappings.
+
+Version 2.3 (May 4, 2016)
+	* Fasta files are now written with a maximum of 70 columns of sequence data
+	  on each line.
+	* Updated gottcha_format to use accessions to lookup taxid, instead of gi
+	  values (since NCBI is phasing out the use of gi values). The gottcha_format
+	  output file now contains the NCBI taxa id as an additional column.
+	* Fixed bug extension_match() in io.cpp (it was being derailed by multiple matches)
+	* Taxa id values are now saved in the deflines of the output fasta files. The new output
+	  format is [start|stop|taxa id] (it used to be [start|stop|length], but since length was
+	  redundant anyway, it has been replaced with the taxa id).
+	* The defline modification has changed to "|start|stop|taxa id|" which is placed in the defline
+	  prefix (i.e. at the end of the accession block) rather than at the end of the defline.
+
+Version 2.4 (June 1, 2016)
+	* Added back() and pop_back() functions for older compilers that do not support these 
+	  operations for std::string.
+	* Fixed bug in extracting accessions from fasta headers (and made a number of changes to improve the
+	  robustness of accession extraction).
+	* Rewrote most of the file handling and sequence IO to allow for more flexible input
+	  options (i.e. concatinating multiple taxa in a single file).
+	* Replaced the NCBI taxa id with a more general taxa id (that includes the NCBI taxa id a prefix
+	  and a user defined strain id as a suffix: <NCBI taxid>.<strain id>). 
+	  This is needed because NCBI typically does not assign taxa id below the strain level.
+	* Made the --squash-ing of non-target taxa smarter (to avoid unnecessary re-reading of fasta files during the 
+	  sequence fragmentation step).
+	* Added "custom" as a valid accession key
+
+Version 2.5 (July 11, 2016)
+	* Allow reading compressed (*.gz) taxa id to genome mapping files. For ReSeq sized databases,
+	  there is a substantial space savings for switching to compressed files.
+	* Changed code for writing fasta files to *require* zlib version >= 1.2.8 (at compile time; this 
+	  simplifies the code, since more recent versions of zlib allow writing of both compressed and 
+	  uncompressed output files). Earlier versions of zlib are *not* allowed, as these will only write 
+	  compressed files.
+	* Added a new command line option, "--root <output file root directory>" to redirect the output of
+	  all GOTTCHA fasta files to the specified root directory.
+	* Changed an important internal data structure (db) from a deque to a vector to speed up the code!
+
+Version 2.6 (July 20, 2016)
+	* Fixed bug in the trim_white_space() function that failed to correctly handle single
+	  character inputs.
+	* (Hopefully) fixed a bug in main() that removes the chance of accidentally using an invalid
+	  iterator (when making word lists unique to individual taxonimc groups).
+	  
+Version 2.7 (July 28, 2016)
+	* Removed an internal bitvector ()signature_db) used for identifying words as signatures. 
+	  The required bit of information has been moved to the word itself (using the most significant bit).
+	* Added a catch() for std::bad_alloc to catch when we run out of memory!
+
+Version 2.75 (Aug 3, 2016)
+	* Using OpenMP to parallelize the calculation of address hash values (for allocating words to different
+	  MPI ranks). Improves run time, but only offers a sub-linear speed up
+	* Using OpenMP to parallelize the sorting (which was only a small fraction of the running time, so this
+	  is only a minor improvement).
+	  
+Version 2.76 (Apr 25, 2017)
+	* Added a test for the define "_GLIBCXX_PARALLEL_PARALLEL_H" to enable parallel (thread-based) sorted at
+	  compile time.
+	* Added documentation (INSTALL.txt and README.txt).
+
+Version 2.77 (May 12, 2017)
+	* Fixed bug in parsing of GenBank file to remove requirement of GI value
+	  (as GI values have been depricated). All of the references to GI value 
+	  have been removed from genbank.cpp.
+	* Updated the documentation to reflect that OpenMP support is *not* optional, 
+	  but *required* for compiling the gottcha_db.
+
+Versions 2.78 - 2.81 (2018)
+	* Modified code to use significantly less RAM
+	* Compute signatures for all requested taxonomic levels in parallel
+	* Improved parallel implementation
+	* Improved documentation
+
+Version 2.82 (Sept 20, 2018)
+	* Changed the TaxaId to be a std::string instead of a packed 64 bit integer. This will offer
+	  more flexibility taxonomic labeling of sequences.
+
+Version 2.83 (Oct 26, 2018)
+	* Fixed bug that created output directories for completely squashed files (when using --root).
+	* Added progress output (for loading background sequences) at the VERBOSE
+	  reporting level. This will potentially create a *lot* of output (since the
+	  background sequences must be loaded and subtracted for each set of targets).
+
+Version 2.84 (Dec 11, 2018)
+	* Added ".fasta" as a valid fasta file extension.
+
+Version 2.85 (Jul 12, 2019)
+	* Fixed a bug in load_sequence_database that prevented re-rooted output directories
+	  from being created (Dec 14, 2018)
+	* Fixed a bug in parse_mapping_files() (in parse_mapping_file.cpp)
+	  that accidentally skipped the function call to parse_id_to_genome
+	  unless the verbosity level was greater than "INFORMATIVE".
