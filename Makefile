@@ -3,14 +3,14 @@ GOTTCHA_DB_OBJS = options.o \
 	fasta.o genbank.o memory_util.o write_targets.o \
 	digest.o taxa.o subtract_sequence.o
 	
-CC = mpic++
+CC = /opt/mpich/3.1.4/gnu/6.2.1/bin/mpic++
 
 PROFILE = #-pg
 OPENMP = -fopenmp
 FLAGS = $(PROFILE) -O3 -Wall $(OPENMP) -std=c++0x
 
-INC = -I. -I/home/jgans/zlib/include
-LIBS = -lm /home/jgans/zlib/lib/libz.a
+INC = -I. -I/usr/include/
+LIBS = -lm /lib/x86_64-linux-gnu/libz.so.1.2.11
 
 .SUFFIXES : .o .cpp .c
 .cpp.o:
