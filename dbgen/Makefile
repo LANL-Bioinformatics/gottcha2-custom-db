@@ -3,7 +3,7 @@ GOTTCHA_DB_OBJS = options.o \
 	fasta.o genbank.o memory_util.o write_targets.o \
 	digest.o taxa.o subtract_sequence.o
 	
-CC = /opt/mpich/3.1.4/gnu/6.2.1/bin/mpic++
+CC = mpic++
 
 PROFILE = #-pg
 OPENMP = -fopenmp
