@@ -19,11 +19,9 @@ mpirun \
     -np $NCPU \
     --oversubscribe \
     -x OMP_NUM_THREADS \
-    --mca btl self,sm,tcp \
     dbgen/gottcha_db \
     --strain  $INDIR/$PREFIX.strain.list \
     --species $INDIR/$PREFIX.species.list \
-    --genus   $INDIR/$PREFIX.genus.list \
     --strain.prefix  "strain-" \
     --species.prefix "species-" \
     --log $PREFIX.gottcha_db.log \
