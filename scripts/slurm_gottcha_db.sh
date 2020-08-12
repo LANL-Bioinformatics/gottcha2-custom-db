@@ -8,7 +8,6 @@
 #SBATCH --job-name=g2db
 set -xe
 
-module load openmpi/gcc/64/2.1.3
 export OMP_NUM_THREADS=2
 
 NCPU=36
@@ -21,30 +20,19 @@ mpirun \
     --oversubscribe \
     -x OMP_NUM_THREADS \
     --mca btl self,sm,tcp \
-  gottcha_db \
+    dbgen/gottcha_db \
     --strain  $INDIR/$PREFIX.strain.list \
     --species $INDIR/$PREFIX.species.list \
     --genus   $INDIR/$PREFIX.genus.list \
-    --family  $INDIR/$PREFIX.family.list \
-    --order   $INDIR/$PREFIX.order.list \
-    --class   $INDIR/$PREFIX.class.list \
-    --phylum  $INDIR/$PREFIX.phylum.list \
-    --kingdom $INDIR/$PREFIX.superkingdom.list \
     --strain.prefix  "strain-" \
     --species.prefix "species-" \
-    --genus.prefix   "genus-" \
-    --family.prefix  "family-" \
-    --order.prefix   "order-" \
-    --class.prefix   "class-" \
-    --phylum.prefix  "phylum-" \
-    --kingdom.prefix "superkingdom-" \
     --log $PREFIX.gottcha_db.log \
     --root $OUTDIR \
     --squash SQUASH \
     --compress \
     -w 24 \
     -f 30 \
-    --RAM 150GB \
+    --RAM 350GB \
     --verbose
 
 set +xe
