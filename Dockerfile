@@ -74,8 +74,6 @@ RUN chmod -R 600 ${SSHDIR}* && \
 RUN pip install --upgrade pip
 
 USER ${USER}
-#RUN  pip install --user -U setuptools \
-#    && pip install --user mpi4py
 
 # ------------------------------------------------------------
 # Configure OpenMPI
@@ -86,16 +84,6 @@ USER root
 RUN rm -fr ${HOME}/.openmpi && mkdir -p ${HOME}/.openmpi
 ADD default-mca-params.conf ${HOME}/.openmpi/mca-params.conf
 RUN chown -R ${USER}:${USER} ${HOME}/.openmpi
-
-# ------------------------------------------------------------
-# Copy MPI4PY example scripts
-# ------------------------------------------------------------
-
-#ENV TRIGGER 1
-
-#ADD mpi4py_benchmarks ${HOME}/mpi4py_benchmarks
-#RUN chown -R ${USER}:${USER} ${HOME}/mpi4py_benchmarks
-
 
 EXPOSE 22
 #CMD ["/usr/sbin/sshd", "-D"]
